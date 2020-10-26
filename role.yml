@@ -1,0 +1,7 @@
+---
+- name: role
+  hosts: webservers
+  remote_user: devops
+  become: yes
+  roles:
+     - apache

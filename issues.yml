@@ -1,0 +1,11 @@
+---
+- name: hosts
+  hosts: all
+  remote_user: devops
+  become: yes
+  tasks:
+     - name: copy 
+       copy:
+        dest: /etc/issue
+        content: "Development"
+       

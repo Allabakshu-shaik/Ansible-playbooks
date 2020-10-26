@@ -1,0 +1,44 @@
+--- 
+- name: logical volume
+  hosts: all
+  remote_user: devops
+  become: yes
+  tasks:
+     - name: create logical volume
+       lvol:
+        vg: research
+        lv: data
+        size: 1500m
+       when: ansible_lvm.vgs.research is defined and ansible_lvm.vgs.research.size_g > 1500
+     - name: Could not create logical volume at that size
+       debug:
+        msg: "Could not create logical volume at that size"
+       when: ansible_lvm.vgs.research is defined and ansible_lvm.vgs.research.size_g < 1500
+     - name: create logical voulme
+       lvol:
+        vg: research
+        lv: data
+        size: 800m
+       when: ansible_lvm.vgs.research is defined and ansible_lvm.vgs.research.size_g < 1500
+     - name: format
+       filesystem:
+        fstype: ext4
+        device: /dev/research/data
+       when: ansible_lvm.vgs.research is defined
+     - name: create directory
+       file:
+        path: /mnt/data
+        state: directory
+       when: inventory_hostname in groups['dev']
+     - name: Mount
+       mount:
+        path: /mnt/data
+        src: /dev/research/data
+        fstype: ext4
+        state: mounted
+       when: inventory_hostname in groups['dev']
+     - name: Volume group does not exist
+       debug: 
+        msg: "Volume group does not exist"
+       when: ansible_lvm.vgs.research is not defined
+ 

@@ -1,0 +1,16 @@
+---
+- name: hwreport.yml
+  hosts: all
+  remote_user: devops
+  become: yes
+  tasks:
+     - name: download file
+       get_url:
+        url: http://content.example.com/rh294/hwreport.empty
+        dest: /root/hwreport.txt 
+        force: yes
+     - name: replace
+       replace:
+        path: /root/hwreport.txt
+        regexp: "inventoryhostname"
+        replace: "{{ inventory_hostname }}"

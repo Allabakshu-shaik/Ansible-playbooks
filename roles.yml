@@ -1,0 +1,19 @@
+---
+- name: balancers 
+  hosts: all
+  remote_user: devops
+  become: yes
+  tasks:
+     - name: balancer role
+       include_role:
+        name: balancer
+       when: inventory_hostname in groups['balancers']
+- name: phpinfo 
+  hosts: all
+  remote_user: devops
+  become: yes
+  tasks:
+     - name: phpinfo role
+       include_role:
+        name: phpinfo
+       when: inventory_hostname in groups['webservers']

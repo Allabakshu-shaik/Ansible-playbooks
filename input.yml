@@ -1,0 +1,15 @@
+---
+- hosts: localhost
+  vars:
+   x: 45
+   my_name: "Bakshu"
+  vars_prompt:
+   name: y
+   prompt: Enter the value for y
+   private: no
+  tasks:
+  - debug:
+     msg:
+      - "The value of x is: {{ x }}"
+      - "The my_name is: {{ my_name }}"
+      - "The value of y is:{{ y }}"

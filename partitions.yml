@@ -1,0 +1,29 @@
+--- 
+- name: partitions
+  hosts: all
+  remote_user: devops
+  become: yes
+  tasks:
+     - name: create a partition
+       parted:
+         device: /dev/vdb
+         number: 1
+         state: present
+         part_end: 800MiB
+         flags: [lvm]
+       when: inventory_hostname in groups['dev']
+     - name: create a partition
+       parted:
+         device: /dev/vdb
+         number: 1
+         state: present
+         part_end: 1000MiB
+         flags: [lvm]
+       when: inventory_hostname in groups['prod']
+     - name: create volume group
+       lvg:
+        vg: research
+        pvs: /dev/vdb1
+        state: present
+       when: ansible_devices.vdb.partitions.vdb1 is defined
+         
